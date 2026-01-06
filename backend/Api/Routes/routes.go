@@ -9,5 +9,6 @@ import (
 func SetupRoutes(router *gin.Engine) {
 	router.GET("/Dashboard", middleware.AuthMiddleware(), handlers.DashboardHandler)
 	router.POST("/Signup", handlers.SignupHandler)
-	router.POST("/Login", middleware.AuthMiddleware(), handlers.LoginHandler)
+	router.POST("/Login", handlers.LoginHandler)
+	router.POST("/Logout", middleware.AuthMiddleware(), handlers.LogoutHandler)
 }
