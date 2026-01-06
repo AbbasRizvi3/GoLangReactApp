@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 
 
 export default function Dashboard() {
-  const [data,setData]=useState([])
-  const API_BASE_URL = process.env.API_BASE_URL
+  const [data,setData]=useState({})
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
   useEffect(()=>{
     fetch(`${API_BASE_URL}/Dashboard`,{
@@ -21,8 +21,7 @@ export default function Dashboard() {
       <ul>
         {data?.msg?.map((item, index) => (
           <li key={index}>{item}</li>
-        ))}
-      </ul>
+        ))}</ul>
     </>
   );
 }
