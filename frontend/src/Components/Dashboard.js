@@ -5,7 +5,10 @@ export default function Dashboard() {
   const [data,setData]=useState([])
 
   useEffect(()=>{
-    fetch("http://localhost:8000/Dashboard").then((res)=>res.json()).then((data)=>{
+    fetch("http://localhost:8000/Dashboard",{
+      method:"GET",
+      credentials:"include",
+    }).then((res)=>res.json()).then((data)=>{
       console.log(data)
       setData(data)
     })
