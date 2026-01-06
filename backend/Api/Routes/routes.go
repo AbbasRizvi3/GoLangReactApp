@@ -7,8 +7,7 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine) {
-	router.Use(middleware.AuthMiddleware())
-	router.GET("/Dashboard", handlers.DashboardHandler)
+	router.GET("/Dashboard", middleware.AuthMiddleware(), handlers.DashboardHandler)
 	router.POST("/Signup", handlers.SignupHandler)
-	router.POST("/Login", handlers.LoginHandler)
+	router.POST("/Login", middleware.AuthMiddleware(), handlers.LoginHandler)
 }

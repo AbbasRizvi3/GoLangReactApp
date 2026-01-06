@@ -8,9 +8,11 @@ export default function Signup() {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
   function handleSignup({ name, email, password }) {
-    fetch("http://localhost:8000/Signup",{
+    console.log("API_BASE_URL =", API_BASE_URL) 
+    fetch(`${API_BASE_URL}/Signup`,{
       method: "POST",
       headers: {
         "Content-Type": "application/json",

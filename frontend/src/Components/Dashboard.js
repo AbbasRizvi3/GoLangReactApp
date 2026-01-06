@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react'
 
 export default function Dashboard() {
   const [data,setData]=useState([])
+  const API_BASE_URL = process.env.API_BASE_URL
 
   useEffect(()=>{
-    fetch("http://localhost:8000/Dashboard",{
+    fetch(`${API_BASE_URL}/Dashboard`,{
       method:"GET",
       credentials:"include",
     }).then((res)=>res.json()).then((data)=>{
