@@ -9,6 +9,23 @@ export default function Signup() {
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
 
+  function handleSignup({ name, email, password }) {
+    fetch("http://localhost:8000/Signup",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password }),
+    })
+    .then((r) => {
+      if (r.ok) {
+        r.json().then((user) => console.log(user));
+      } else {
+        r.json().then((err) => setError(err.error));
+      } 
+    })
+  }
+
   function handleSubmit(e) {
     e.preventDefault()
     setError('')
@@ -16,9 +33,9 @@ export default function Signup() {
     if (!email) return setError('Please enter your email')
     if (!password || password.length < 6) return setError('Password must be at least 6 characters')
     if (password !== confirm) return setError('Passwords do not match')
+    handleSignup({ name, email, password })
     // Frontend-only: pretend to submit
     console.log('Signing up', { name, email })
-    alert('Account created (demo)')
   }
 
   return (

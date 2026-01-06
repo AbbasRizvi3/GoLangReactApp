@@ -1,20 +1,43 @@
 import React, { useState } from 'react'
 import './Auth.css'
-import { Link } from 'react-router-dom'
+import { Link} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const navigate = useNavigate()
+
+  function handleLogin({ email, password }) {
+    fetch("http://localhost:8000/Login",{
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+    .then((r) => {
+      if (r.ok) {
+        r.json().then((user) => {
+          console.log(user)
+          localStorage.setItem("token", user.token);
+        });
+        navigate("/Dashboard");
+      }
+      else {
+        r.json().then((err) => setError(err.error));
+      } 
+    })
+  }
 
   function handleSubmit(e) {
     e.preventDefault()
     setError('')
     if (!email) return setError('Please enter your email')
     if (!password || password.length < 6) return setError('Password must be at least 6 characters')
-    // Frontend-only: pretend to submit
+      handleLogin({ email, password })
     console.log('Logging in', { email, password })
-    alert('Logged in (demo)')
   }
 
   return (
