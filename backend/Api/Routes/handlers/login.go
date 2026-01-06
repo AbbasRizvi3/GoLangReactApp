@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -14,7 +15,7 @@ import (
 
 var key = os.Getenv("JWT_SECRET_KEY")
 
-var jwtKey = []byte(key)
+var JwtKey = []byte(key)
 
 type LoginInput struct {
 	Email    string `json:"email" binding:"required,email"`
@@ -51,13 +52,15 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
+	tokenString, err := token.SignedString(JwtKey)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create token"})
 		return
 	}
+	fmt.Println("Token issued:", tokenString)
+
+	c.SetCookie("token", tokenString, 3600, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User logged in successfully",
-		"token":   tokenString,
 	})
 }

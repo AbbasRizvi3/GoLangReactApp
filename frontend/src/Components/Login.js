@@ -16,12 +16,12 @@ export default function Login() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
+      credentials: 'include',
     })
     .then((r) => {
       if (r.ok) {
         r.json().then((user) => {
           console.log(user)
-          localStorage.setItem("token", user.token);
         });
         navigate("/Dashboard");
       }
