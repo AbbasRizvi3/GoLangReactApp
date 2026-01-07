@@ -3,11 +3,11 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
-	"os"
-
 	config "github.com/AbbasRizvi3/GoLangReactApp/Config"
+	models "github.com/AbbasRizvi3/GoLangReactApp/Models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson"
@@ -17,18 +17,8 @@ var key = os.Getenv("JWT_SECRET_KEY")
 
 var JwtKey = []byte(key)
 
-type LoginInput struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
-}
-
-type Claims struct {
-	Email string `json:"email"`
-	jwt.RegisteredClaims
-}
-
 func LoginHandler(c *gin.Context) {
-	var input LoginInput
+	var input models.LoginInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -44,7 +34,7 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	expirationTime := time.Now().Add(1 * time.Hour)
-	claims := &Claims{
+	claims := &models.Claims{
 		Email: input.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),

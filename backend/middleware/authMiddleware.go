@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/AbbasRizvi3/GoLangReactApp/Api/Routes/handlers"
+	models "github.com/AbbasRizvi3/GoLangReactApp/Models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -17,7 +18,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		claims := &handlers.Claims{}
+		claims := &models.Claims{}
 
 		token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 			return handlers.JwtKey, nil

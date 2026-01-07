@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import './Auth.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function Signup() {
   const [name, setName] = useState('')
@@ -8,12 +8,14 @@ export default function Signup() {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
+  const navigate=useNavigate()
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
 
   function handleSignup({ name, email, password }) {
     console.log("API_BASE_URL =", API_BASE_URL) 
     fetch(`${API_BASE_URL}/Signup`,{
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -22,6 +24,11 @@ export default function Signup() {
     .then((r) => {
       if (r.ok) {
         r.json().then((user) => console.log(user));
+        setName('')
+        setEmail('')
+        setPassword('')
+        setConfirm('')
+        navigate("/Dashboard")
       } else {
         r.json().then((err) => setError(err.error));
       } 

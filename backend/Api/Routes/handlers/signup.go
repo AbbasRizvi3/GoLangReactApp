@@ -1,21 +1,19 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	config "github.com/AbbasRizvi3/GoLangReactApp/Config"
+	models "github.com/AbbasRizvi3/GoLangReactApp/Models"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-type SignupInput struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=8"`
-}
-
 func SignupHandler(c *gin.Context) {
-	var input SignupInput
+	var input models.SignupInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
@@ -29,5 +27,24 @@ func SignupHandler(c *gin.Context) {
 		return
 	}
 	config.Client.Database("appdb").Collection("users").InsertOne(c, input)
+
+	expirationTime := time.Now().Add(1 * time.Hour)
+	claims := &models.Claims{
+		Email: input.Email,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString(JwtKey)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create token"})
+		return
+	}
+	fmt.Println("Token issued:", tokenString)
+
+	c.SetCookie("token", tokenString, 3600, "/", "localhost", false, true)
+
 	c.JSON(200, gin.H{"message": "User signed up successfully"})
 }

@@ -23,7 +23,12 @@ export default function Dashboard() {
     fetch(`${API_BASE_URL}/Dashboard`,{
       method:"GET",
       credentials:"include",
-    }).then((res)=>res.json()).then((data)=>{
+    }).then((res)=>{
+      if(!res.ok){
+        navigate("/Login")
+      }
+      return res.json()
+    }).then((data)=>{
       console.log(data)
       setData(data)
     })
